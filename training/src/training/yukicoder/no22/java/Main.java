@@ -1,13 +1,13 @@
-package training;
+package training.yukicoder.no22.java;
 
-public class Main20171231 {
+public class Main {
 
 	public static void main(String[] args) {
 		String msg = "(())";
 		int length = 4;
 		int num = 4;
 
-		int ret = new Main20171231().execute(msg, length, num);
+		int ret = new Main().execute(msg, length, num);
 		System.out.println(ret);
 	}
 
