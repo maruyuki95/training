@@ -1,20 +1,16 @@
 def execute(arg):
     ans = 0
-    cIndex = []
-    wIndex = []
+    wCount = 0
 
-    for idx, s in enumerate(arg):
-        if(s == "c"):
-            cIndex.append(idx)
+    rev = list(arg)
+    rev.reverse()
 
+    for idx, s in enumerate(rev):
         if(s == "w"):
-            if(len(cIndex) > 0 and len(wIndex) > 0):
-                for c in cIndex:
-                    for w in wIndex:
-                        if(c < w):
-                            ans+=1
+            wCount += 1
 
-            wIndex.append(idx)
+        if(s == "c"):
+            ans += wCount * (wCount - 1) // 2
 
     return ans
 
