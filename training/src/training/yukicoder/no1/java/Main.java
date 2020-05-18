@@ -36,69 +36,48 @@ public class Main {
 		System.out.println(ret);
 	}
 
-	private int execute(int cityNum, int money, int roadNum, List<Integer> cityS, List<Integer> cityT,
-			List<Integer> costs, List<Integer> times) {
-
-		// 目的地にたどり着く経路を検索
-		List<Integer> routes = new ArrayList<Integer>();
-		List<List<Integer>> compRoutes = new ArrayList<List<Integer>>();
-		searchRoute(1, cityNum, cityS, cityT, routes, compRoutes, money, costs);
-
-		if(compRoutes.isEmpty()) {
+	private int execute(int cityNum, int money, int roadNum, List<Integer> cityS, List<Integer> cityT, List<Integer> costs, List<Integer> times) {
+		searchRoute(1, cityNum, cityS, cityT, money, costs, 0, times);
+		if(minTime == null) {
 			return -1;
 		}
-
-		// 経路のうち最短時間を計算する
-		return calcurateMinTime(compRoutes, times);
+		return minTime.intValue();
 	}
 
-	private void searchRoute(int location, int goal, List<Integer> cityS, List<Integer> cityT, List<Integer> routes, List<List<Integer>> compRoutes, int money, List<Integer> costs) {
-		for (int i = 0; i < cityS.size(); i++) {
-			int start = cityS.get(i);
-			if (start != location) {	// 道の入り口が現在地と異なるのでスキップ
-				continue;
-			}
+	private Integer minTime = null;
+	private void searchRoute(int location, int goal, List<Integer> cityS, List<Integer> cityT, int money, List<Integer> costs, int totalTime, List<Integer> times) {
+		List<Integer> roadNums = filterRoadNumsWithLocation(cityS, location);		// 道の入り口が現在地と同じ道のみに絞る
 
-			Integer cost = costs.get(i);
+		for (Integer roadNum : roadNums) {
+			Integer cost = costs.get(roadNum);
 			if (money < cost) {	// 資金が足りないのでスキップ
 				continue;
 			}
 
-			List<Integer> newRoutes = new ArrayList<Integer>(routes);
-			newRoutes.add(i);
-			if (goal == cityT.get(i)) {	// 目的地にたどり着いたのでcompに入れて再探索
-				compRoutes.add(newRoutes);
+			int afterTime = totalTime + times.get(roadNum);
+			if (minTime != null && minTime.intValue() <= afterTime) { // 既に最短時間よりも時間がかかっているためスキップ
+				continue;
+			}
+
+			Integer afterLocation = cityT.get(roadNum);
+			if (goal == afterLocation) {
+				minTime = afterTime;
 				continue;
 			}else {	// 道の出口が目的地ではないため、再帰して探索
-				int newMoney = money - cost;
-				searchRoute(cityT.get(i), goal, cityS, cityT, newRoutes, compRoutes, newMoney, costs);
+				int afterMoney = money - cost;
+				searchRoute(afterLocation, goal, cityS, cityT, afterMoney, costs, afterTime, times);
 			}
 		}
 	}
 
-	private int sumAmountWithRoute(List<Integer> route, List<Integer> values) {
-		int ret = 0;
-		for (Integer roadNum : route) {
-			ret += values.get(roadNum);
+	private List<Integer> filterRoadNumsWithLocation(List<Integer> cityS, int location) {
+		List<Integer> ret = new ArrayList<Integer>();
+		for (int i = 0; i < cityS.size(); i++) {
+			if (cityS.get(i) == location) {
+				ret.add(i);
+			}
 		}
 		return ret;
 	}
-
-	private int calcurateMinTime(List<List<Integer>> filteredByMoneyRoutes, List<Integer> times) {
-		if (filteredByMoneyRoutes == null || filteredByMoneyRoutes.isEmpty()) {
-			throw new IllegalArgumentException("No routes.");
-		}
-
-		Integer minTime = null;
-		for (List<Integer> route : filteredByMoneyRoutes) {
-			int totalTime = sumAmountWithRoute(route, times);
-			if (minTime == null || totalTime < minTime.intValue()) {
-				minTime = totalTime;
-			}
-		}
-
-		return minTime.intValue();
-	}
-
 
 }
