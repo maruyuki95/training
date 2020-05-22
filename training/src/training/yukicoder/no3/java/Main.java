@@ -15,36 +15,30 @@ public class Main {
 
 	private int execute(int goal) {
 		List<Integer> routes = new ArrayList<Integer>();
-		searchRoute(1, goal, routes);
-		if (moveMin == null) {
-			return -1;
-		}
-		return moveMin.intValue();
+		return searchRoute(1, goal, routes);
 	}
 
-	private Integer moveMin = null;
-	private void searchRoute(int location, int goal, List<Integer> routes) {
+	private int searchRoute(int location, int goal, List<Integer> routes) {
 		List<Integer> afterRoutes = new ArrayList<Integer>(routes);
  		afterRoutes.add(location);
 
 		if (location == goal) {
-			if (moveMin == null || afterRoutes.size() < moveMin.intValue()) {
-				moveMin = afterRoutes.size();
-			}
-			return ;
+			return afterRoutes.size();
 		}
 
 		int binaryTotal = calcurateBinaryTotal(location);
 
 		int locationForward = location + binaryTotal;
 		if (canMove(goal, afterRoutes, locationForward)) {
-			searchRoute(locationForward, goal, afterRoutes);
+			return searchRoute(locationForward, goal, afterRoutes);
 		}
 
 		int locationBackward = location - binaryTotal;
 		if (canMove(goal, afterRoutes, locationBackward)){
-			searchRoute(locationBackward, goal, afterRoutes);
+			 return searchRoute(locationBackward, goal, afterRoutes);
 		}
+
+		return -1;
 	}
 
 	private boolean canMove(int goal, List<Integer> routes, int location) {
