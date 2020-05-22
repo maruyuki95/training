@@ -1,8 +1,8 @@
 package training.yukicoder.no3.java;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 
@@ -14,43 +14,42 @@ public class Main {
 	}
 
 	private int execute(int goal) {
-		List<Integer> routes = new ArrayList<Integer>();
-		searchRoute(1, goal, routes);
-		if (moveMin == null) {
-			return -1;
-		}
-		return moveMin.intValue();
+		Set<Integer> locations = new HashSet<Integer>();
+		locations.add(1);
+		return search(goal, locations, locations, 1);
 	}
 
-	private Integer moveMin = null;
-	private void searchRoute(int location, int goal, List<Integer> routes) {
-		List<Integer> afterRoutes = new ArrayList<Integer>(routes);
- 		afterRoutes.add(location);
+	private int search(int goal, Set<Integer> passedLocations, Set<Integer> diffLocations, int times) {
+		if (diffLocations.contains(goal)) {
+			return times;
+		}
 
-		if (location == goal) {
-			if (moveMin == null || afterRoutes.size() < moveMin.intValue()) {
-				moveMin = afterRoutes.size();
+		Set<Integer> newLocations = new HashSet<Integer>();
+		for (Integer location : diffLocations) {
+			int binaryTotal = calcurateBinaryTotal(location);
+
+			int locationForward = location + binaryTotal;
+			if (isMovedToNewLocation(goal, passedLocations, locationForward)) {
+				newLocations.add(locationForward);
 			}
-			return ;
+
+			int locationBackward = location - binaryTotal;
+			if (isMovedToNewLocation(goal, passedLocations, locationBackward)) {
+				newLocations.add(locationBackward);
+			}
 		}
 
-		int binaryTotal = calcurateBinaryTotal(location);
-
-		int locationForward = location + binaryTotal;
-		if (canMove(goal, afterRoutes, locationForward)) {
-			searchRoute(locationForward, goal, afterRoutes);
+		if (newLocations.size() > 0) {
+			passedLocations.addAll(newLocations);
+			return search(goal, passedLocations, newLocations, ++times);
 		}
 
-		int locationBackward = location - binaryTotal;
-		if (canMove(goal, afterRoutes, locationBackward)){
-			searchRoute(locationBackward, goal, afterRoutes);
-		}
+		return -1;
 	}
 
-	private boolean canMove(int goal, List<Integer> routes, int location) {
-		return 1 <= location && location <= goal && !routes.contains(location);
+	private boolean isMovedToNewLocation(int goal, Set<Integer> passedLocations, int location) {
+		return 1 <= location && location <= goal && !passedLocations.contains(location);
 	}
-
 
 	/**
 	 * 10進数の数値を2進数で表現した時の1のビット数を返す
