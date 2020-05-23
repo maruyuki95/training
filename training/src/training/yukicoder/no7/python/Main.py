@@ -15,15 +15,15 @@ def isLoseNumber(number, primeNumbers, loseNumbers):
 
 
 def execute(number):
-    primeNumbers =[]
-    loseNumbers =[]
+    primeNumbers =set()
+    loseNumbers =set()
 
     for i in range(2, number + 1):
         if isPrimeNumber(i, primeNumbers) :
-            primeNumbers.append(i)
+            primeNumbers.add(i)
 
         if isLoseNumber(i, primeNumbers, loseNumbers) :
-            loseNumbers.append(i)
+            loseNumbers.add(i)
 
     if number in loseNumbers :
         return "Lose"
