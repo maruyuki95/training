@@ -12,29 +12,21 @@ public class Main {
 			sushiTastes[i] = sc.nextInt();
 		}
 
-		int ret = new Main().execute(sushiNum, sushiTastes);
+		int ret = new Main().execute(sushiTastes);
 		System.out.println(ret);
 	}
 
-	int execute(int sushiNum, int[] sushiTastes) {
+	int execute(int[] sushiTastes) {
 		int lastOnMaxTasteSum = 0;
 		int lastOffMaxTasteSum = 0;
-		boolean lastOff = true;
 
 		for (int taste : sushiTastes) {
-			if (lastOff) {
-				lastOnMaxTasteSum = lastOffMaxTasteSum + taste;
-				lastOff = false;
-			} else {
-				int newLastOnMaxTasteSum = lastOffMaxTasteSum + taste;
-				int newLastOffMaxTasteSum = lastOnMaxTasteSum;
+			int newLastOnMaxTasteSum = lastOffMaxTasteSum + taste;
+			int newLastOffMaxTasteSum = lastOnMaxTasteSum;
 
-				lastOnMaxTasteSum = newLastOnMaxTasteSum;
+			lastOnMaxTasteSum = newLastOnMaxTasteSum;
+			if (lastOffMaxTasteSum <= newLastOffMaxTasteSum) {
 				lastOffMaxTasteSum = newLastOffMaxTasteSum;
-
-				if (lastOnMaxTasteSum <= lastOffMaxTasteSum) {
-					lastOff = true;
-				}
 			}
 
 		}
