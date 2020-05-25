@@ -23,7 +23,7 @@ public class Main {
 
 		for (int taste : sushiTastes) {
 			if (lastOff) {
-				lastOnMaxTasteSum += taste;
+				lastOnMaxTasteSum = lastOffMaxTasteSum + taste;
 				lastOff = false;
 			} else {
 				int newLastOnMaxTasteSum = lastOffMaxTasteSum + taste;
