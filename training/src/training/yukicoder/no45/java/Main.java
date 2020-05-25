@@ -16,9 +16,30 @@ public class Main {
 		System.out.println(ret);
 	}
 
-	 int execute(int sushiNum, int[] sushiTastes) {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+	int execute(int sushiNum, int[] sushiTastes) {
+		int lastOnMaxTasteSum = 0;
+		int lastOffMaxTasteSum = 0;
+		boolean lastOff = true;
+
+		for (int taste : sushiTastes) {
+			if (lastOff) {
+				lastOnMaxTasteSum += taste;
+				lastOff = false;
+			} else {
+				int newLastOnMaxTasteSum = lastOffMaxTasteSum + taste;
+				int newLastOffMaxTasteSum = lastOnMaxTasteSum;
+
+				lastOnMaxTasteSum = newLastOnMaxTasteSum;
+				lastOffMaxTasteSum = newLastOffMaxTasteSum;
+
+				if (lastOnMaxTasteSum <= lastOffMaxTasteSum) {
+					lastOff = true;
+				}
+			}
+
+		}
+
+		return Math.max(lastOnMaxTasteSum, lastOffMaxTasteSum);
 	}
 
 }
