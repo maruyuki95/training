@@ -7,48 +7,68 @@ import java.util.Set;
 public class Main {
 
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int arg = sc.nextInt();
-		String ret = new Main().execute(arg);
-		System.out.println(ret);
+		new Main().execute();
 	}
 
-	private String execute(int number) {
-		Set<Integer> primaries = new HashSet<Integer>();
-		Set<Integer>  loseNumbers = new HashSet<Integer>();
+	private void execute() {
+		int number = loadInputValue();
+		outputResult(canFirstPlayerWin(number));
+	}
 
-		for (int i = 2; i <= number; i++) {
-			if (isPrimaryNumber(i, primaries)) {
-				primaries.add(i);
+	private static final int MIN_OF_PRIME_NUMBER = 2;
+	private boolean canFirstPlayerWin(int number) {
+		Set<Integer> primeNumbers = new HashSet<Integer>();
+		Set<Integer> loseNumbers = new HashSet<Integer>();
+
+		for (int i = MIN_OF_PRIME_NUMBER; i <= number; i++) {
+			if (isPrimeNumber(i, primeNumbers)) {
+				primeNumbers.add(i);
 			}
 
-			if (isLoseNumber(i, primaries, loseNumbers)) {
+			if (isLoseNumber(i, primeNumbers, loseNumbers)) {
 				loseNumbers.add(i);
 			}
 		}
 
 		if (loseNumbers.contains(number)) {
-			return "Lose";
+			return false;
 		}
-		return "Win";
+		return true;
 	}
 
-	private boolean isPrimaryNumber(int i, Set<Integer> primaries) {
-		for (Integer primary : primaries) {
-			if (i % primary == 0) {
+	private boolean isPrimeNumber(int targetNumber, Set<Integer> primeNumbers) {
+		for (Integer primeNumber : primeNumbers) {
+			if (targetNumber % primeNumber == 0) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private boolean isLoseNumber(int targetNumber, Set<Integer> primaries, Set<Integer> loseNumbers) {
-		for (Integer primary : primaries) {
-			if (loseNumbers.contains(targetNumber - primary)) {
+	private boolean isLoseNumber(int targetNumber, Set<Integer> primeNumbers, Set<Integer> loseNumbers) {
+		for (Integer primeNumber : primeNumbers) {
+			int opponentNumber = targetNumber - primeNumber;
+			if (loseNumbers.contains(opponentNumber)) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private static final String WIN_FOR_DISPLAY = "Win";
+	private static final String LOSE_FOR_DISPLAY = "Lose";
+	private void outputResult(boolean canFirstPlayerWin) {
+		if (canFirstPlayerWin) {
+			System.out.println(WIN_FOR_DISPLAY);
+		} else {
+			System.out.println(LOSE_FOR_DISPLAY);
+		}
+	}
+
+	@SuppressWarnings("resource")
+	private int loadInputValue() {
+		Scanner sc = new Scanner(System.in);
+		return sc.nextInt();
 	}
 
 }
