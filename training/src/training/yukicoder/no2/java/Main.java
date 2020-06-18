@@ -59,10 +59,10 @@ public class Main {
 	}
 
 	private boolean isFirstPlayerWinner(Map<Integer, Integer> primeFactorizationMap) {
-		return isFirstPlayerWinnerRecursively(new ArrayList<Integer>(primeFactorizationMap.values()));
+		return isWinRecursively(new ArrayList<Integer>(primeFactorizationMap.values()));
 	}
 
-	private boolean isFirstPlayerWinnerRecursively(List<Integer> exponents) {
+	private boolean isWinRecursively(List<Integer> exponents) {
 		if (exponents.size() == 0) {
 			return false;
 		}
@@ -70,12 +70,24 @@ public class Main {
 			return true;
 		}
 
-		Integer exponentValue1 = exponents.remove(0);
-		Integer exponentValue2 = exponents.remove(0);
-		if (exponentValue1 != exponentValue2) {
-			exponents.add(Math.abs(exponentValue1 - exponentValue2));
+		for (int i = 0; i < exponents.size(); i++) {
+			Integer exponent = exponents.get(i);
+			List<Integer> exceptTargetExponents = new ArrayList<Integer>(exponents);
+			exceptTargetExponents.remove(i);
+
+			for (int j = 0; j < exponent; j++) {
+				List<Integer> passingExponents = new ArrayList<Integer>(exceptTargetExponents);
+				if (j != 0) {
+					passingExponents.add(j);
+				}
+
+				if (isWinRecursively(passingExponents) == false) {
+					return true;
+				}
+			}
 		}
-		return isFirstPlayerWinnerRecursively(exponents);
+
+		return false;
 	}
 
 	@SuppressWarnings("resource")

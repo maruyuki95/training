@@ -31,4 +31,9 @@ public class MainTest extends Main {
 		assertEquals("Bob", judgeWinner(100000000));
 	}
 
+	@Test
+	public void test_system5() {
+		assertEquals("Alice", judgeWinner(25670140));
+	}
+
 }
