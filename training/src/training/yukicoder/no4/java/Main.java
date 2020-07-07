@@ -25,40 +25,28 @@ public class Main {
 		}
 
 		int goalWeight = totalWeight / 2;
-		int remainingWeight = totalWeight;
-		List<Integer> sortedWeights = convertToSortedList(weights);
-		Set<Integer> availavleWeights = new HashSet<>();
-		availavleWeights.add(0);
-		for (Integer weight : sortedWeights) {
-			remainingWeight -= weight;
-			
-			Set<Integer> additionalWeights = new HashSet<>(availavleWeights);
-			for (Integer availavleWeight : availavleWeights) {
-				int e = availavleWeight + weight;
-				if (e == goalWeight) {
+		return canMakeWeight(weights, goalWeight);
+	}
+
+	private boolean canMakeWeight(int[] weights, int goalWeight) {
+		Set<Integer> makableWeights = new HashSet<>();
+		makableWeights.add(0);
+		for (Integer weight : weights) {
+			Set<Integer> additionalWeights = new HashSet<>(makableWeights);
+			for (Integer makableWeight : makableWeights) {
+				int additionalWeight = makableWeight + weight;
+				if (additionalWeight == goalWeight) {
 					return true;
-				} else if (e > goalWeight) {
+				} else if (additionalWeight > goalWeight) {
 					continue;
-				} else if (e + remainingWeight < goalWeight) {
-					continue;
-				}
-				additionalWeights.add(e); 
+				} 
+				additionalWeights.add(additionalWeight); 
 			}
-			availavleWeights = additionalWeights;
+			makableWeights = additionalWeights;
 		}
-		
 		return false;
 	}
 
-	private List<Integer> convertToSortedList(int[] array) {
-		List<Integer> ret = new ArrayList<>();
-		for (int i : array) {
-			ret.add(i);
-		}
-		Collections.sort(ret);
-		return ret ;
-	}
-	
 	private int total(int[] values) {
 		int totalValue = 0;
 		for (int value : values) {
