@@ -26,7 +26,7 @@ public class MainTest extends Main {
 	}
 
 	@Test
-	public void testMany() {
+	public void testSystem08() {
 		int[] weights = {
 				16, 100, 48, 18, 62, 46, 90, 58, 48, 20,
 				82, 32, 86, 86, 76, 8, 56, 60, 82, 26, 
@@ -41,5 +41,21 @@ public class MainTest extends Main {
 };
 		assertFalse(canDevideInHalf(weights));
 	}
+
+	@Test
+	public void testMany() {
+		int[] weights = new int[100];
+		for (int i = 0; i < weights.length; i++) {
+			weights[i] = i + 1;
+		}
+		assertTrue(canDevideInHalf(weights));
+	}
+
+	@Test
+	public void testMaru() {
+		int[] weights = {5, 5, 5, 3, 3, 3, 3, 3};
+		assertTrue(canDevideInHalf(weights));
+	}
+
 }
 

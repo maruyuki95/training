@@ -2,8 +2,10 @@ package training.yukicoder.no4.java;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
 
@@ -22,47 +24,30 @@ public class Main {
 			return false;
 		}
 
-		int halfTotalWeight = totalWeight /2 ;
-		startTime = System.currentTimeMillis();
-		return canMakeWeight(convertToSortedList(weights), halfTotalWeight);
-	}
-
-	private long startTime = 0;
-	private long removeTime = 0;
-	private boolean canMakeWeight(List<Integer> weights, int goalWeight) {
-		List<Integer> copyList = new ArrayList<>(weights);
+		int goalWeight = totalWeight / 2;
+		int remainingWeight = totalWeight;
+		List<Integer> sortedWeights = convertToSortedList(weights);
+		Set<Integer> availavleWeights = new HashSet<>();
+		availavleWeights.add(0);
+		for (Integer weight : sortedWeights) {
+			remainingWeight -= weight;
+			
+			Set<Integer> additionalWeights = new HashSet<>(availavleWeights);
+			for (Integer availavleWeight : availavleWeights) {
+				int e = availavleWeight + weight;
+				if (e == goalWeight) {
+					return true;
+				} else if (e > goalWeight) {
+					continue;
+				} else if (e + remainingWeight < goalWeight) {
+					continue;
+				}
+				additionalWeights.add(e); 
+			}
+			availavleWeights = additionalWeights;
+		}
 		
-		for (Integer weight : weights) {
-			if (weight == goalWeight) {
-				return true;
-			} 
-			
-			int sum = summary(copyList);
-			if (sum < goalWeight) {
-				return false;
-			}
-			
-			long removeStart = System.currentTimeMillis();
-			copyList.remove(weight);
-			removeTime += System.currentTimeMillis() - removeStart;
-			if (weight > goalWeight) {
-				continue;
-			}
-			
-			if (canMakeWeight(copyList, goalWeight - weight)) {
-				return true;
-			}
-		}
-		System.out.println(100 * removeTime / (System.currentTimeMillis() - startTime));
 		return false;
-	}
-
-	private int summary(List<Integer> list) {
-		int sum = 0;
-		for (Integer integer : list) {
-			sum += integer;
-		}
-		return sum;
 	}
 
 	private List<Integer> convertToSortedList(int[] array) {
